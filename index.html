@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>NEON SURGE</title>
 <style>
   :root { color-scheme: dark; }
@@ -124,7 +127,7 @@
   </div>
 </div>
 
-<div id="levelup" class="modal hidden">
+<div id="levelup" class="modal" style="display:none">
   <div class="panel">
     <h2>LEVEL UP</h2>
     <div class="sub">CHOOSE YOUR EDGE</div>
@@ -132,7 +135,7 @@
   </div>
 </div>
 
-<div id="gameover" class="modal hidden">
+<div id="gameover" class="modal" style="display:none">
   <div class="panel">
     <h1>SURGE ENDED</h1>
     <div class="sub" id="goStats"></div>
@@ -773,13 +776,13 @@
                       '<div class="pmeta"><div class="pname">' + u.name + '</div><div class="pdesc">' + u.desc + '</div><div class="plvl">' + u.tag + '</div></div>';
       div.onclick = function () {
         u.apply();
-        document.getElementById('levelup').classList.add('hidden');
+        document.getElementById('levelup').style.display = 'none';
         levelupOpen = false;
         game.running = true;
       };
       container.appendChild(div);
     });
-    document.getElementById('levelup').classList.remove('hidden');
+    document.getElementById('levelup').style.display = 'flex';
   }
 
   var PASSIVE_DEFS = [
@@ -1193,7 +1196,7 @@
       else if (game.t < 300) verdict = 'Dangerous. The void noticed.';
       else verdict = 'Legendary. You bent the horde.';
       document.getElementById('goVerdict').textContent = verdict;
-      document.getElementById('gameover').classList.remove('hidden');
+      document.getElementById('gameover').style.display = 'flex';
     }, 900);
   }
 
@@ -1211,25 +1214,29 @@
   }
 
   // ---------- Controls ----------
+  // Force-hide modals immediately in case CSS/HTML cache is stale
+  document.getElementById('levelup').style.display = 'none';
+  document.getElementById('gameover').style.display = 'none';
+
   document.getElementById('startBtn').onclick = function () {
     initAudio();
     if (AC && AC.state === 'suspended') AC.resume();
-    document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('overlay').style.display = 'none';
     newGame();
     game.running = true;
     updateHud();
   };
   document.getElementById('retryBtn').onclick = function () {
-    document.getElementById('gameover').classList.add('hidden');
+    document.getElementById('gameover').style.display = 'none';
     newGame();
     game.running = true;
     updateHud();
   };
   window.addEventListener('keydown', function (e) {
-    if ((e.key === 'Enter' || e.key === ' ') && !document.getElementById('overlay').classList.contains('hidden')) {
+    if ((e.key === 'Enter' || e.key === ' ') && document.getElementById('overlay').style.display !== 'none') {
       document.getElementById('startBtn').click();
     }
-    if ((e.key === 'Enter' || e.key === ' ') && !document.getElementById('gameover').classList.contains('hidden')) {
+    if ((e.key === 'Enter' || e.key === ' ') && document.getElementById('gameover').style.display === 'flex') {
       document.getElementById('retryBtn').click();
     }
   });
